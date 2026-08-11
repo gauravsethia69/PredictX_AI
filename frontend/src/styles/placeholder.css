@@ -1,0 +1,29 @@
+.placeholder-page {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.placeholder-page > span {
+  color: var(--orange);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.placeholder-page > h1 {
+  margin: 8px 0;
+}
+
+.placeholder-page > p {
+  color: var(--muted);
+  margin: 0 0 20px;
+}
+
+.placeholder-content {
+  min-height: 280px;
+  display: grid;
+  place-items: center;
+  color: #89929e;
+  padding: 30px;
+  text-align: center;
+}

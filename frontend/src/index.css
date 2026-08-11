@@ -1,0 +1,117 @@
+
+:root {
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #f7f9fc;
+  background: #080a0e;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --bg: #080a0e;
+  --panel: #11141a;
+  --panel-2: #151920;
+  --panel-soft: #0d1015;
+  --border: #252a32;
+  --border-soft: #1d222a;
+  --text: #f7f9fc;
+  --muted: #8f98a6;
+  --orange: #ff7a00;
+  --orange-soft: rgba(255, 122, 0, 0.12);
+  --green: #35d07f;
+  --yellow: #ffc247;
+  --red: #ff4d55;
+  --blue: #45a8ff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(255, 122, 0, 0.08), transparent 25%),
+    linear-gradient(180deg, #080a0e 0%, #0b0e13 100%);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.loading-screen,
+.error-screen {
+  min-height: 50vh;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.error-message {
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 77, 85, 0.35);
+  background: rgba(255, 77, 85, 0.08);
+  color: #ff9ea3;
+  margin-bottom: 16px;
+}
+
+/* PredictX typography refresh */
+
+:root {
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: 500;
+  --font-label: 600;
+  --font-heading: 800;
+}
+
+html, body, button, input, select, textarea, table {
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+  font-weight: var(--font-body);
+  letter-spacing: -0.005em;
+}
+
+h1, h2, h3, h4, h5, h6, strong, b {
+  font-weight: var(--font-heading);
+}
+
+button, input, select, textarea, th, label {
+  font-weight: var(--font-label);
+}
+
+p, span, small, td, li {
+  font-weight: 500;
+}
+
+/* PredictX commercial UI system */
+:root {
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --shadow-card: 0 18px 48px rgba(0,0,0,.28);
+}
+html, body, button, input, select, textarea, table { font-family: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+body { font-weight: 500; letter-spacing: -.012em; }
+h1,h2,h3,h4,strong,b { font-weight: 750; letter-spacing: -.035em; }
+button, th, label { font-weight: 700; }
