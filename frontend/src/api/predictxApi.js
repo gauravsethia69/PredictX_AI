@@ -6,7 +6,7 @@ export const REFRESH_INTERVAL =
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000,
+  timeout: 90000,
   headers: {
     "Content-Type": "application/json",
   },
