@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.db.database import get_db
 from app.db.models import SensorReading
+from app.services.machine1_health import normalize_machine_1
 
 
 router = APIRouter(
@@ -53,12 +54,29 @@ def direction(values):
 
 
 def serialize_reading(reading):
-    """
-    Convert SQLAlchemy SensorReading into JSON-safe data.
-    """
+    """Convert SQLAlchemy SensorReading into JSON-safe data."""
 
     if reading is None:
         return None
+
+    if reading.machine_id == "MACHINE-001":
+        normalized = normalize_machine_1(
+            temperature=reading.temperature,
+            current=reading.current,
+            sound=reading.sound,
+            motor_running=reading.motor_running,
+        )
+    else:
+        normalized = {
+            "health": reading.health,
+            "machine_status": reading.machine_status,
+            "failure_probability": reading.failure_probability,
+            "diagnosis": reading.diagnosis,
+            "recommendation": reading.recommendation,
+            "failure_stage": reading.failure_stage,
+            "remaining_life_hours": reading.remaining_life_hours,
+            "prediction_explanation": reading.prediction_explanation,
+        }
 
     return {
         "id": reading.id,
@@ -74,14 +92,14 @@ def serialize_reading(reading):
         "sound": reading.sound,
         "motor_running": reading.motor_running,
         "source": reading.source,
-        "health": reading.health,
-        "machine_status": reading.machine_status,
-        "failure_probability": reading.failure_probability,
-        "diagnosis": reading.diagnosis,
-        "recommendation": reading.recommendation,
-        "failure_stage": reading.failure_stage,
-        "remaining_life_hours": reading.remaining_life_hours,
-        "prediction_explanation": reading.prediction_explanation,
+        "health": normalized["health"],
+        "machine_status": normalized["machine_status"],
+        "failure_probability": normalized["failure_probability"],
+        "diagnosis": normalized["diagnosis"],
+        "recommendation": normalized["recommendation"],
+        "failure_stage": normalized["failure_stage"],
+        "remaining_life_hours": normalized["remaining_life_hours"],
+        "prediction_explanation": normalized["prediction_explanation"],
     }
 
 
@@ -108,16 +126,27 @@ def dashboard(
 
     latest = rows[-1]
 
+    if machine_id == "MACHINE-001":
+        normalized_health = [
+            normalize_machine_1(
+                temperature=r.temperature,
+                current=r.current,
+                sound=r.sound,
+                motor_running=r.motor_running,
+            )["health"]
+            for r in rows
+        ]
+        normalized_failure = [round(100.0 - h, 2) for h in normalized_health]
+    else:
+        normalized_health = [r.health for r in rows]
+        normalized_failure = [r.failure_probability for r in rows]
+
     analysis = {
         "reading_count": len(rows),
 
-        "health_trend": direction(
-            [r.health for r in rows]
-        ),
+        "health_trend": direction(normalized_health),
 
-        "failure_risk_trend": direction(
-            [r.failure_probability for r in rows]
-        ),
+        "failure_risk_trend": direction(normalized_failure),
 
         "temperature_trend": direction(
             [r.temperature for r in rows]

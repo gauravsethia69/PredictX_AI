@@ -7,7 +7,8 @@ from app.schemas.sensor import (
     SensorDataCreate,
     SensorReadingResponse,
 )
-from app.services.machine2_simulation import simulate_machine_2, normalize_machine_1
+from app.services.machine2_simulation import simulate_machine_2
+from app.services.machine1_health import normalize_machine_1
 
 
 router = APIRouter(
@@ -44,6 +45,7 @@ def receive_sensor_data(
             temperature=data.temperature,
             current=data.current,
             sound=data.sound,
+            motor_running=data.motor_running,
         )
     else:
         trusted = {
@@ -198,6 +200,33 @@ def latest_reading(
             ),
         )
 
+    if machine_id == "MACHINE-001":
+        normalized = normalize_machine_1(
+            temperature=reading.temperature,
+            current=reading.current,
+            sound=reading.sound,
+            motor_running=reading.motor_running,
+        )
+        return {
+            "id": reading.id,
+            "machine_id": reading.machine_id,
+            "timestamp": reading.timestamp,
+            "temperature": reading.temperature,
+            "vibration": reading.vibration,
+            "current": reading.current,
+            "sound": reading.sound,
+            "motor_running": reading.motor_running,
+            "source": reading.source,
+            "health": normalized["health"],
+            "machine_status": normalized["machine_status"],
+            "failure_probability": normalized["failure_probability"],
+            "diagnosis": normalized["diagnosis"],
+            "recommendation": normalized["recommendation"],
+            "failure_stage": normalized["failure_stage"],
+            "remaining_life_hours": normalized["remaining_life_hours"],
+            "prediction_explanation": normalized["prediction_explanation"],
+        }
+
     return reading
 
 
@@ -286,6 +315,37 @@ def readings(
         .all()
     )
     rows.reverse()
+
+    if machine_id == "MACHINE-001":
+        normalized_rows = []
+        for row in rows:
+            normalized = normalize_machine_1(
+                temperature=row.temperature,
+                current=row.current,
+                sound=row.sound,
+                motor_running=row.motor_running,
+            )
+            normalized_rows.append({
+                "id": row.id,
+                "machine_id": row.machine_id,
+                "timestamp": row.timestamp,
+                "temperature": row.temperature,
+                "vibration": row.vibration,
+                "current": row.current,
+                "sound": row.sound,
+                "motor_running": row.motor_running,
+                "source": row.source,
+                "health": normalized["health"],
+                "machine_status": normalized["machine_status"],
+                "failure_probability": normalized["failure_probability"],
+                "diagnosis": normalized["diagnosis"],
+                "recommendation": normalized["recommendation"],
+                "failure_stage": normalized["failure_stage"],
+                "remaining_life_hours": normalized["remaining_life_hours"],
+                "prediction_explanation": normalized["prediction_explanation"],
+            })
+        rows = normalized_rows
+
     return {
         "machine_id": machine_id,
         "count": len(rows),
