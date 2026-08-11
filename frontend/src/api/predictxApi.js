@@ -1,7 +1,5 @@
 import axios from "axios";
-
-export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
+const API_BASE_URL = "https://predictx-ai-ef8m.onrender.com";
 
 export const REFRESH_INTERVAL =
   Number(import.meta.env.VITE_REFRESH_INTERVAL) || 3000;
