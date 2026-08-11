@@ -1,5 +1,6 @@
 import axios from "axios";
-export const API_BASE_URL = "";
+const API_BASE_URL = "";
+
 export const REFRESH_INTERVAL =
   Number(import.meta.env.VITE_REFRESH_INTERVAL) || 3000;
 
