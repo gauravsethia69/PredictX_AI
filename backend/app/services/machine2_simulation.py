@@ -15,9 +15,9 @@ MACHINE_2_ID = "MACHINE-002"
 FAULT_NAME = "SHAFT_RESISTANCE"
 
 # Baseline measured from the healthy motor on 2026-08-10.
-HEALTHY_TEMP = 25.85
-HEALTHY_CURRENT = 1.3475
-HEALTHY_SOUND = 1631.5
+HEALTHY_TEMP = 27.0
+HEALTHY_CURRENT = 0.12
+HEALTHY_SOUND = 1768.0
 
 
 def clamp(value: float, minimum: float, maximum: float) -> float:
@@ -35,12 +35,15 @@ def normalize_machine_1(
     channel is producing false detections in the prototype.
     """
 
-    temp_penalty = min(abs(float(temperature) - HEALTHY_TEMP) * 1.2, 12.0)
-    current_penalty = min(abs(float(current) - HEALTHY_CURRENT) / 0.10 * 2.0, 12.0)
-    sound_penalty = min(abs(float(sound) - HEALTHY_SOUND) / 100.0 * 2.0, 12.0)
+    # Healthy running baseline calibrated from the live ESP32 readings seen
+    # during the demo: ~27 C, ~0.12 A and sound around 1,750-1,800.
+    # Small real sensor movement therefore produces small health movement.
+    temp_penalty = min(abs(float(temperature) - HEALTHY_TEMP) * 2.0, 4.0)
+    current_penalty = min(abs(float(current) - HEALTHY_CURRENT) / 0.02 * 1.2, 4.0)
+    sound_penalty = min(abs(float(sound) - HEALTHY_SOUND) / 50.0 * 1.0, 4.0)
 
-    health = clamp(97.0 - temp_penalty - current_penalty - sound_penalty, 82.0, 99.0)
-    failure_probability = clamp(100.0 - health, 1.0, 18.0)
+    health = clamp(97.0 - temp_penalty - current_penalty - sound_penalty, 88.0, 99.0)
+    failure_probability = clamp(100.0 - health, 1.0, 12.0)
 
     return {
         "health": round(health, 2),
@@ -53,7 +56,7 @@ def normalize_machine_1(
         "prediction_explanation": (
             "Prototype health uses temperature, current and sound. "
             "The vibration channel is excluded from health scoring because "
-            "the current sensor/module is unreliable."
+            "the vibration sensor/module is unreliable."
         ),
     }
 
